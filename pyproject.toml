@@ -1,0 +1,20 @@
+[project]
+name = "sentiment_analysis"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Yasser Kaddoura", email = "yasser.kaddoura19@gmail.com"},
+]
+dependencies = ["pandas>=2.3.3", "spacy>=3.8.11", "pyarrow>=22.0.0", "gensim>=4.4.0", "scikit-learn>=1.7.2", "tqdm>=4.67.1"]
+requires-python = "==3.13.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+[dependency-groups]
+jupyter = [
+    "notebook>=7.5.0",
+]
