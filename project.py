@@ -277,7 +277,7 @@ plt.show()
 ## Rule-based model
 Valence Aware Dictionary and sEntiment Reasoner (VADER)
   - Valence score: emotional measurement
-  - Lexicon: average of 10 independent human raters [-4, +4]
+  - Lexicon: average of 10 human raters [-4, +4]
   - Specialized for Social media
   - Compound: Summing words valence scores; adjusted to rules; normalized between -1 & 1
   - [Paper](https://ojs.aaai.org/index.php/ICWSM/article/view/14550) & [git repository](https://github.com/cjhutto/vaderSentiment/)
@@ -482,7 +482,7 @@ df_sentiment[df_sentiment["polarity"] != df_sentiment["pred_polarity"]][
     - Linear suppoer vector classifier
     - Logistic regression
     - Naive bayes
-- Embeddings: 
+- Vector representations: 
     - Bag of words for unigrams & bigrams
     - TF-IDF for unigrams & bigrams
 """
@@ -529,17 +529,14 @@ def evaluate_model_cv(model, vectorizer, X, y, cv_splits=5) -> List[Dict[str, in
             {
                 "fold": fold,
                 "accuracy": accuracy_score(y_test, preds),
-                "precision": precision_score(
-                    y_test, preds
-                ),
-                "recall": recall_score(
-                    y_test, preds
-                ),
+                "precision": precision_score(y_test, preds),
+                "recall": recall_score(y_test, preds),
                 "f1": f1_score(y_test, preds),
             }
         )
 
     return fold_metrics
+
 
 vectorizers = {
     "BOW": CountVectorizer(ngram_range=(1, 2)),
@@ -603,7 +600,7 @@ plt.show()
 # %% [markdown]
 # # Neural networks
 # Bidirectional LSTM
-# - Embeddings:
+# - Vector representations:
 #     - Ordinal
 #     - DistillBERT
 
@@ -618,7 +615,8 @@ from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 import numpy as np
 
-# Text Preprocessing 
+
+# Text Preprocessing
 class TextTokenizer:
     def __init__(self, num_words=None):
         self.num_words = num_words
@@ -718,6 +716,7 @@ print(
     f"\nPercentages: Train={len(X_train) / len(X) * 100:.1f}%, Val={len(X_val) / len(X) * 100:.1f}%, Test={len(X_test) / len(X) * 100:.1f}%"
 )
 
+
 # Dataset Class
 class SentimentDataset(Dataset):
     def __init__(self, X, Y):
@@ -769,6 +768,7 @@ class LSTMSentimentModel(nn.Module):
         output = self.sigmoid(output)
 
         return output
+
 
 # Training Setup
 embed_dim_out = 256
@@ -1003,6 +1003,7 @@ print(f"Train: {len(X_train)} samples, Y_train shape: {Y_train.shape}")
 print(f"Val: {len(X_val)} samples, Y_val shape: {Y_val.shape}")
 print(f"Test: {len(X_test)} samples, Y_test shape: {Y_test.shape}")
 
+
 # Dataset Class for BERT
 class BERTSentimentDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_length=128):
@@ -1039,6 +1040,7 @@ class BERTSentimentDataset(Dataset):
             "attention_mask": encoding["attention_mask"].squeeze(0),
             "labels": label,
         }
+
 
 # LSTM Model with BERT Embeddings
 class BERTLSTMSentimentModel(nn.Module):
@@ -1304,4 +1306,9 @@ plt.ylabel("True Label")
 plt.xlabel("Predicted Label")
 plt.show()
 
-# %%
+# %% [markdown]
+"""
+## Future work
+- Apply multi-class classification (include neutral, very +ve, very -ve)
+- Aspect sentiment analysis
+"""
